@@ -4,25 +4,21 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import config.Credentials;
 import helpers.Attach;
-import io.qameta.allure.Description;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 import static helpers.Attach.getSessionId;
-import static helpers.CityChange.getCity;
 import static helpers.GetProperty.readProperty;
 import static io.qameta.allure.Allure.step;
 
 public class TestsForMainPage {
-
-    String good = "iphone",
-            city,
-            newCity;
+    static final String MAINPAGE = "https://www.ozon.ru/";
 
     @BeforeAll
     static void setUpConfig() {
@@ -43,38 +39,10 @@ public class TestsForMainPage {
     }
 
     @Test
-    @Description("Проверка работы поиска")
-    void checkSearch() {
-        step("Открытие сайта", () ->
-                open("https://www.ozon.ru/"));
-        step("Поиск товара", () ->
-                $("[name='text']").val(good).pressEnter());
-        step("Проверка текста", () ->
-                $(".tile-hover-target .item").shouldHave(text(good)));
-    }
-
-    @Test
-    @Description("Проверка смены города")
-    void changeCity() {
-        step("Открытие сайта", () ->
-                open("https://www.ozon.ru/"));
-        step("Проверка текущего города", () ->
-                city = $("[tabindex='-1'] div").getText());
-        step("Клик на город", () ->
-                $("[tabindex='0']").click());
-        step("Выбор города", () -> {
-            newCity = getCity(city);
-            $("._10Zs ._16XE._2HHF").val(newCity).pressEnter();
-        });
-        step("Проверка выбранного города", () ->
-                $("[tabindex='-1'] div").shouldHave(text(newCity)));
-    }
-
-    @Test
-    @Description("Проверка страницы 'Избранное'")
+    @DisplayName("Проверка страницы 'Избранное'")
     void checkOrderList() {
         step("Открытие сайта", () ->
-                open("https://www.ozon.ru/"));
+                open(MAINPAGE));
         step("Открытие страницы 'Заказы'", () ->
                 $("[data-widget='favoriteCounter']").click());
         step("Проверка открытия страницы", () ->
@@ -82,15 +50,38 @@ public class TestsForMainPage {
     }
 
     @Test
-    @Description("Проверка страницы 'Корзина'")
-    void checkCart() {
+    @DisplayName("Проверка окошка авторизации")
+    void checkAuthPage() {
         step("Открытие сайта", () ->
-                open("https://www.ozon.ru/"));
-        step("Открытие страницы 'Корзина'", () ->
-                $("[data-widget='headerIcon']").click());
-        step("Проверка открытия страницы", () ->
-                $(".b4k8").shouldHave(text("Корзина пуста")));
+                open(MAINPAGE));
+        step("Нажатие на кнопку авторизации", () ->
+                $("svg.b2x8").click());
+        step("Проверка надписи", () ->
+                $(".b9c1 .b9c7").shouldHave(text("Войдите или зарегистрируйтесь, чтобы продолжить")));
     }
+
+    @Test
+    @DisplayName("Проверка работы ссылки 'Все акции и купоны'")
+    void checkPromoPage() {
+        step("Открытие сайта", () ->
+                open(MAINPAGE));
+        step("Нажатие на ссылку 'Все акции и купоны'", () ->
+                $(".f-body.a0k9").click());
+        step("Проверка надписи", () ->
+                $(".c5r9 .a0k9").shouldHave(text("Акции и спецпредложения")));
+    }
+
+    @Test
+    @DisplayName("Проверка открытия страницы 'Постаматы'")
+    void checkPostamatsPage() {
+        step("Открытие сайта", () ->
+                open(MAINPAGE));
+        step("Нажатие на ссылку 'Постаматы'", () ->
+                $$("ul li").findBy(text("Постаматы")).click());
+        step("Проверка надписи", () ->
+                $(".content__mob-wrapper h2.title").shouldHave(text("Постамат")));
+    }
+
     @AfterEach
     void attach() {
         String sessionId = getSessionId();
