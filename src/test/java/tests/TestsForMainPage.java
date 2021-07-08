@@ -64,7 +64,7 @@ public class TestsForMainPage {
                 $("[tabindex='0']").click());
         step("Выбор города", () -> {
             newCity = getCity(city);
-            $("._16XE._2HHF").val(newCity).pressEnter();
+            $("._10Zs ._16XE._2HHF").val(newCity).pressEnter();
         });
         step("Проверка выбранного города", () ->
                 $("[tabindex='-1'] div").shouldHave(text(newCity)));
@@ -85,7 +85,7 @@ public class TestsForMainPage {
     @Description("Проверка страницы 'Корзина'")
     void checkCart() {
         step("Открытие сайта", () ->
-                open("https://demoqa.com/"));
+                open("https://www.ozon.ru/"));
         step("Открытие страницы 'Корзина'", () ->
                 $("[data-widget='headerIcon']").click());
         step("Проверка открытия страницы", () ->
