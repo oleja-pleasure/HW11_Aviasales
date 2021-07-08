@@ -6,7 +6,6 @@ import config.Credentials;
 import helpers.Attach;
 import io.qameta.allure.Description;
 import io.qameta.allure.selenide.AllureSelenide;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -86,7 +85,7 @@ public class TestsForMainPage {
     @Description("Проверка страницы 'Корзина'")
     void checkCart() {
         step("Открытие сайта", () ->
-                open("https://www.ozon.ru/"));
+                open("https://demoqa.com/"));
         step("Открытие страницы 'Корзина'", () ->
                 $("[data-widget='headerIcon']").click());
         step("Проверка открытия страницы", () ->
@@ -98,12 +97,7 @@ public class TestsForMainPage {
         Attach.screenshotAs("Last screenshot");
         Attach.pageSource();
         Attach.browserConsoleLogs();
-        Attach.addVideo(sessionId);
         closeWebDriver();
+        Attach.addVideo(sessionId);
     }
-
-//    @AfterAll
-//    static void closeBrowser() {
-//        closeWebDriver();
-//    }
 }
