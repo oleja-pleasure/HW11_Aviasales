@@ -99,10 +99,11 @@ public class TestsForMainPage {
         Attach.pageSource();
         Attach.browserConsoleLogs();
         Attach.addVideo(sessionId);
-    }
-
-    @AfterAll
-    static void closeBrowser() {
         closeWebDriver();
     }
+
+//    @AfterAll
+//    static void closeBrowser() {
+//        closeWebDriver();
+//    }
 }
