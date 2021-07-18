@@ -18,7 +18,9 @@ import static helpers.GetProperty.readProperty;
 import static io.qameta.allure.Allure.step;
 
 public class TestsForMainPage {
-    static final String MAINPAGE = "https://www.ozon.ru/";
+    static final String MAINPAGE = "https://www.aviasales.ru/",
+            CITY = "Москва",
+            CITY2 = "Санкт-Петербург";
 
     @BeforeAll
     static void setUpConfig() {
@@ -39,47 +41,61 @@ public class TestsForMainPage {
     }
 
     @Test
-    @DisplayName("Проверка страницы 'Избранное'")
+    @DisplayName("Проверка открытия главной страницы")
     void checkOrderList() {
         step("Открытие сайта", () ->
                 open(MAINPAGE));
-        step("Открытие страницы 'Заказы'", () ->
-                $("[data-widget='favoriteCounter']").click());
-        step("Проверка открытия страницы", () ->
-                $(".a4b8").shouldHave(text("В Избранном пока ничего нет")));
+        step("Проверка надписи 'Поиск дешёвых авиабилетов'", () ->
+                $("h1.header__title").shouldHave(text("Поиск дешёвых авиабилетов")));
     }
 
     @Test
-    @DisplayName("Проверка окошка авторизации")
+    @DisplayName("Проверка ошибки при поиске с одинаковыми городами")
     void checkAuthPage() {
         step("Открытие сайта", () ->
                 open(MAINPAGE));
-        step("Нажатие на кнопку авторизации", () ->
-                $("svg.b2x8").click());
-        step("Проверка надписи", () ->
-                $(".b9c1 .b9c7").shouldHave(text("Войдите или зарегистрируйтесь, чтобы продолжить")));
+        step("Ввод города в поле 'Откуда'", () ->
+                $("#origin").val(CITY));
+        step("Ввод города в поле 'Куда'", () ->
+                $("#destination").val(CITY));
+        step("Нажатие на кнопку 'Поиск'", () ->
+                $(".--on-home").click());
+        step("Проверка надписи 'Укажите разные города'", () ->
+                $(".autocomplete__input-wrapper.--error").shouldHave(text("Укажите разные города")));
     }
 
     @Test
-    @DisplayName("Проверка работы ссылки 'Все акции и купоны'")
+    @DisplayName("Проверка отображения опроса при поиске билета")
     void checkPromoPage() {
         step("Открытие сайта", () ->
                 open(MAINPAGE));
-        step("Нажатие на ссылку 'Все акции и купоны'", () ->
-                $(".f-body.a0k9").click());
-        step("Проверка надписи", () ->
-                $(".c5r9 .a0k9").shouldHave(text("Акции и спецпредложения")));
+        step("Ввод города в поле 'Откуда'", () ->
+                $("#origin").val(CITY));
+        step("Ввод города в поле 'Куда'", () ->
+                $("#destination").val(CITY2));
+        step("Ввод даты в поле 'Когда'", () ->{
+                $(".trip-duration__input-wrapper.--departure").click();
+                $(".calendar__month:nth-child(2) .calendar-day").click();
+    });
+        step("Снятие чекбокса открытия booking.com",() ->
+                $("#clicktripz").click());
+        step("Нажатие на кнопку 'Поиск'", () ->
+                $(".--on-home").click());
+        step("Проверка отображения надписи 'Помогите нам стать лучше — ответьте на вопрос:'",() ->
+                $(".preroll-quiz__question-title").shouldHave(text("Помогите нам стать лучше&nbsp;— ответьте на&nbsp;вопрос:")));
     }
 
     @Test
-    @DisplayName("Проверка открытия страницы 'Постаматы'")
+    @DisplayName("Проверка открытия страницы 'Спецпредложения'")
     void checkPostamatsPage() {
         step("Открытие сайта", () ->
                 open(MAINPAGE));
-        step("Нажатие на ссылку 'Постаматы'", () ->
-                $$("ul li").findBy(text("Постаматы")).click());
-        step("Проверка надписи", () ->
-                $(".content__mob-wrapper h2.title").shouldHave(text("Постамат")));
+        step("Нажатие на кнопку 'Сервисы'", () ->
+                $(".navbar-services").click());
+        step("Открытие страницы 'Спецпредложения'", ()->
+                $(".menu__link[title='Спецпредложения']").click());
+        step("Проверка надписи 'Поиск спецпредложений на авиабилеты'", () ->
+                $(".offer-list-page__header").shouldHave(text("Поиск спецпредложений на авиабилеты")));
     }
 
     @AfterEach
